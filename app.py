@@ -1,20 +1,20 @@
 from flask import Flask, jsonify, request
-# from pymongo import MongoClient
-# from flask_cors import CORS
+from pymongo import MongoClient
+from flask_cors import CORS
 import csv
 import random
 
-# cors = CORS()
+cors = CORS()
 
 def create_app():
 	app = Flask(__name__)
-	# cors.init_app(app)
+	cors.init_app(app)
 	return app
 
 
-# client = MongoClient('localhost', 27017)
-# db = client.test
-# insurance_members = db.insurance_members
+client = MongoClient('localhost', 27017)
+db = client.test
+insurance_members = db.insurance_members
 
 app = create_app()
 FILE_PATH = './sample-rates.csv'
@@ -139,22 +139,22 @@ def getPlans():
                               break
       return plan_details
 
-# @app.route("/checkout", methods=['POST'])
-# def saveToDB():
-#       content_type = request.headers.get('Content-Type')
-#       if (content_type == 'application/json'):
-#             json = request.get_json()
-#       else:
-#             return 'invalid request'
-#       tier = request.get_json().get('city')
-#       tenure_amount = request.get_json().get('tenure_amount')
-#       year = request.get_json().get('year')
-#       clients = request.get_json().get('clients')
-#       policy_number = 'POL' + str(random.randrange(10000, 500000))
-#       for i in range(len(clients)):
-#             client = clients[i]
-#             client['member_number'] = 'MEMB' + str(policy_number) + str(i+1)
-#       record = insurance_members.insert_one({ 'tier': tier, 'tenure_amount': tenure_amount, 'year': year, 'clients': clients, 'policy_number': policy_number })
+@app.route("/checkout", methods=['POST'])
+def saveToDB():
+      content_type = request.headers.get('Content-Type')
+      if (content_type == 'application/json'):
+            json = request.get_json()
+      else:
+            return 'invalid request'
+      tier = request.get_json().get('city')
+      tenure_amount = request.get_json().get('tenure_amount')
+      year = request.get_json().get('year')
+      clients = request.get_json().get('clients')
+      policy_number = 'POL' + str(random.randrange(10000, 500000))
+      for i in range(len(clients)):
+            client = clients[i]
+            client['member_number'] = 'MEMB' + str(policy_number) + str(i+1)
+      record = insurance_members.insert_one({ 'tier': tier, 'tenure_amount': tenure_amount, 'year': year, 'clients': clients, 'policy_number': policy_number })
 
 
       return { 'tier': tier, 'tenure_amount': tenure_amount, 'year': year, 'clients': clients, 'policy_number': policy_number }
